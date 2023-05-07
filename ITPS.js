@@ -287,7 +287,7 @@ const Plans = [
     },
 
 ];
-let individualPlans2023 = new IndividualPlans(Plans);
+export let individualPlans2023 = new IndividualPlans(Plans);
 individualPlans2023.show()
 // let newPlans = [{
 //     id: 22,
@@ -314,12 +314,12 @@ individualPlans2023.show()
 
 
 let select = document.getElementById("selectTeacher");
-alert("i am here");
-let ObjIP = document.createElement('option');
+let i = 1;
 for(let tempIP of individualPlans2023.getObjs(0,20)){
-    ObjIP.value = "s1";
-    ObjIP.textContent = tempIP.teacher;
-    select.prepend(ObjIP);
+    let value1 = "s" + i;
+    i++;
+    let teacherName = tempIP.teacher;
+    select.insertAdjacentHTML('afterbegin','<option value='+value1 + '>' + tempIP.teacher + '</option>')
 }
 /*
 individualPlans2023.show();

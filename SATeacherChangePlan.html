@@ -1,0 +1,36 @@
+<html>
+   <head>
+       <link rel="stylesheet" href="styles.css">
+      <title>teacherDisciplines</title>
+      </head>
+   <header>
+       <form name="search" action="#" method="get">
+           <input type="text" name="q" placeholder="Поиск"><button type="submit">GO</button>
+       </form>
+       <h1>ЭЛЕКТРОННАЯ СИСТЕМА ДЛЯ УЧЕТА И КОНТРОЛЯ ИНДИВИДУАЛЬНОГО ПЛАНА ПРЕПОДАВАТЕЛЯ</h1>
+   </header>
+   <body>
+   <p><b>Преподаватель:</b></p>
+   <b>дисциплины:</b>
+ <nav>
+	<form>
+   <p><select name="selectDisciplines" size="10" multiple>
+
+   </select>
+   <input type="submit" value="добавить"></p>
+        <b>выбранные дисциплины:</b>
+        <p><select name="selectedDisciplines" size="10" multiple>
+
+        </select>
+            <input type="submit" value="убрать"></p>
+        <button class="to_SAChangePlan" type="button"><a href="SAPlanChange.html">сохранить индивидуальный план</a></button>
+    </form>
+</nav>
+   <script type="module" src="ChangeITP.js"></script>
+   </body>
+   
+ <footer>
+	<div id="footer">
+      <p>По всем вопросам обращаться по электронной почте: fpm.metelskaEV@bsu.by</p>
+</div>
+</footer>
