@@ -7,6 +7,9 @@ class IndividualPlans {
         this.Size = newObjInf.length;
     }
     #validForGet(obj, validCheck){
+        if(validCheck === undefined){
+            return true;
+        }
         if(validCheck.id  && obj.id !== validCheck.id)
             return false;
         else if(validCheck.description  && obj.description !== validCheck.description)
@@ -25,7 +28,7 @@ class IndividualPlans {
     getObjs(skip, top, filterConfig){
         let tempArray = [];
         for (let i = skip, j = 0; i < skip+top ; i++){
-            if(/*this.#validForGet(this.PlansArray[i],filterConfig)*/true){
+            if(this.#validForGet(this.PlansArray[i],filterConfig)){
                 tempArray [j] = this.PlansArray[i];
                 j++
             }
@@ -101,7 +104,10 @@ class IndividualPlans {
             console.log(this.PlansArray[i]);
         }
     }
-};
+    getSize(){
+        return this.#size;
+    }
+}
 
 
 
@@ -287,63 +293,63 @@ const Plans = [
     },
 
 ];
-export let individualPlans2023 = new IndividualPlans(Plans);
-individualPlans2023.show()
-// let newPlans = [{
-//     id: 22,
-//     description: 'индивидуальный учебный план преподавателя',
-//     createdAt: new Date('2023-04-23T20:00:00'),
-//     author: 'Дмитриева Мария Ильинична',
-//     Subjects: [4,8],
-// },
-//     {
-//         id: 23,
-//         description: 'индивидуальный учебный план преподавателя',
-//         createdAt: new Date('2023-04-23T20:00:00'),
-//         author: 'Дмитриева Мария Ильинична',
-//         Subjects: [7,9],
-//     }];
-// let newPlan = {
-//     id: 21,
-//     description: 'индивидуальный учебный план преподавателя',
-//     createdAt: new Date('2023-04-23T20:00:00'),
-//     author: 'Дмитриева Мария Ильинична',
-//     Subjects: [3,5],
-// }
 
 
 
-let select = document.getElementById("selectTeacher");
-let i = 1;
-for(let tempIP of individualPlans2023.getObjs(0,20)){
-    let value1 = "s" + i;
-    i++;
-    let teacherName = tempIP.teacher;
-    select.insertAdjacentHTML('afterbegin','<option value='+value1 + '>' + tempIP.teacher + '</option>')
+class view{
+    #IPS
+    #selectEl = document.getElementById("selectTeacher");
+    #userEl = document.getElementById("user");
+    #filterEl = document.getElementById("filter");
+    #filterConfig;
+    #user = "none"
+
+
+
+    update(){
+        for( let node of this.#selectEl.childNodes){
+            node.remove()
+        }
+
+        let i = 1;
+        for(let tempIP of this.#IPS.getObjs(0,this.#IPS.Size)){
+            let value1 = "s" + i;
+            i++;
+            let teacherName = tempIP.teacher;
+            this.#selectEl.insertAdjacentHTML('afterbegin','<option value='+value1 + '>' + tempIP.teacher + '</option>')
+        }
+        this.#userEl.textContent = "Пользователь: " + this.#user
+        this.#filterEl.textContent = "Фильтр: " + (this.#filterConfig ? this.#filterConfig : "none");
+    }
+    constructor(IPS){
+        this.#IPS = IPS;
+        this.update();
+    }
+    addPost(obj){
+    this.#IPS.addObj(obj);
+    this.update();
+    }
+    removePost(id){
+        this.#IPS.removeObj(id);
+        this.update();
+    }
+    editPost(id,change){
+        this.#IPS.editObj(id,change);
+        this.update();
+    }
+    filterPost(filterConfig){
+        this.#filterConfig = filterConfig;
+        this.update()
+    }
+    setUser(user){
+        this.#user = user;
+        this.update();
+    }
+    getIPSSize(){
+        return this.#IPS.Size;
+    }
+
 }
-/*
-individualPlans2023.show();
 
-console.log(individualPlans2023.getObjs(2, 4, {author:'Дмитриева Мария Ильинична'}));
-
-console.log(individualPlans2023.getObj(11));
-
-console.log(individualPlans2023.validateObj(newPlan));
-
-individualPlans2023.addObj(newPlan);
-individualPlans2023.show();
-individualPlans2023.editObj(1,  {
-    description: 'очень важный индивидуальный учебный план преподавателя',
-    Subjects: [1,2,3],
-});
-individualPlans2023.show();
-
-individualPlans2023.removeObj(5);
-individualPlans2023.show();
-
-console.log(individualPlans2023.addAll(newPlans));
-individualPlans2023.show();
-
-*/
-
-
+let IPS = new IndividualPlans(Plans);
+let IPSView = new view(IPS);
