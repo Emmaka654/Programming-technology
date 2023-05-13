@@ -1,9 +1,9 @@
 class IndividualPlans {
    #PlansArray = [];
-   #size;
+   //#size;
 
     constructor (newObjInf){
-        this.PlansArray = newObjInf;
+        this.#PlansArray = newObjInf;
         this.Size = newObjInf.length;
     }
     #validForGet(obj, validCheck){
@@ -28,20 +28,20 @@ class IndividualPlans {
     getObjs(skip, top, filterConfig){
         let tempArray = [];
         for (let i = skip, j = 0; i < skip+top ; i++){
-            if(this.#validForGet(this.PlansArray[i],filterConfig)){
-                tempArray [j] = this.PlansArray[i];
+            if(this.#validForGet(this.#PlansArray[i],filterConfig)){
+                tempArray [j] = this.#PlansArray[i];
                 j++
             }
 
         }
-        tempArray.sort(function(a,b){
-            return new Date(a.createdAt) - new Date(b.createdAt);
-        });
+        // tempArray.sort(function(a,b){
+        //     return new Date(a.createdAt) - new Date(b.createdAt);
+        // });
         return tempArray;
     }
 
     getObj(id) {
-        return this.PlansArray.find(x => x.id === id);
+        return this.#PlansArray.find(x => x.id === id);
     }
     validateObj(obj){
         if(!obj.id  || typeof obj.id != "number")
@@ -61,51 +61,55 @@ class IndividualPlans {
     }
 
     addObj (obj){
-        this.PlansArray[this.Size] = obj;
+        this.#PlansArray[this.Size] = obj;
         this.Size++;
         return true;
     }
 
     editObj(id, change){
-        let index = this.PlansArray.findIndex(x => x.id === id);
+
+        let index = this.#PlansArray.findIndex(x => x.id === id);
+        if(index === -1)
+            return false;
         if (change.description){
-            this.PlansArray[index].description = change.description;
+            this.#PlansArray[index].description = change.description;
         }
         if (change.createdAt){
-            this.PlansArray[index].createdAt = change.createdAt;
+            this.#PlansArray[index].createdAt = change.createdAt;
         }
         if (change.author){
-            this.PlansArray[index].author = change.author;
+            this.#PlansArray[index].author = change.author;
         }
         if(change.Subjects){
-            this.PlansArray[index].Subjects = change.Subjects;
+            this.#PlansArray[index].Subjects = change.Subjects;
         }
         if(change.teacher){
             this.#PlansArray[index].teacher = change.teacher;
         }
+        return  true;
     }
 
     removeObj(id){
-        this.PlansArray.splice(this.PlansArray.findIndex(x => x.id === id), 1);
+        this.#PlansArray.splice(this.#PlansArray.findIndex(x => x.id === id), 1);
         this.Size--;
     }
 
     addAll (addObj){
         let n = this.Size;
-        for (let i = this.Size, j = 0; i < n + addObj.length; i++, j++){
-            this.PlansArray[i] = addObj[j];
+        for (let j in addObj){
+            this.#PlansArray.push(addObj[j]);
             this.Size ++;
         }
-        return this.PlansArray;
+        return this.#PlansArray;
     }
 
     show(){
         for (let i = 0; i < this.Size; i++){
-            console.log(this.PlansArray[i]);
+            console.log(this.#PlansArray[i]);
         }
     }
     getSize(){
-        return this.#size;
+        return this.Size;
     }
 }
 
@@ -306,20 +310,39 @@ class view{
 
 
 
+    #configString(){
+        let tmp = "";
+        if (this.#filterConfig.description){
+            tmp += " " + this.#filterConfig.description ;
+        }
+        if (this.#filterConfig.createdAt){
+            tmp += " " + this.#filterConfig.createdAt;
+        }
+        if (this.#filterConfig.author){
+            tmp += " " + this.#filterConfig.author;
+        }
+        if(this.#filterConfig.Subjects){
+            tmp += " " + this.#filterConfig.Subjects;
+        }
+        if(this.#filterConfig.teacher){
+            tmp += " " + this.#filterConfig.teacher;
+        }
+        return tmp;
+    }
     update(){
-        for( let node of this.#selectEl.childNodes){
-            node.remove()
+        for( let node of  Array.from(this.#selectEl.childNodes)){
+            //alert(node.textContent);
+            node.remove();
         }
 
         let i = 1;
-        for(let tempIP of this.#IPS.getObjs(0,this.#IPS.Size)){
-            let value1 = "s" + i;
+        for(let tempIP of this.#IPS.getObjs(0,this.#IPS.Size,this.#filterConfig)){
+            let value1 = "s " + i;
             i++;
-            let teacherName = tempIP.teacher;
-            this.#selectEl.insertAdjacentHTML('afterbegin','<option value='+value1 + '>' + tempIP.teacher + '</option>')
+            this.#selectEl.insertAdjacentHTML('beforeend','<option value='+value1 + '>' + tempIP.teacher + ": " + tempIP.Subjects + '</option>');
         }
-        this.#userEl.textContent = "Пользователь: " + this.#user
-        this.#filterEl.textContent = "Фильтр: " + (this.#filterConfig ? this.#filterConfig : "none");
+        this.#userEl.textContent = "Пользователь: " + this.#user;
+        this.#filterEl.textContent = "Фильтр: " + (this.#filterConfig ? this.#configString() : "none");
     }
     constructor(IPS){
         this.#IPS = IPS;
@@ -339,7 +362,7 @@ class view{
     }
     filterPost(filterConfig){
         this.#filterConfig = filterConfig;
-        this.update()
+        this.update();
     }
     setUser(user){
         this.#user = user;
@@ -351,5 +374,5 @@ class view{
 
 }
 
-let IPS = new IndividualPlans(Plans);
-let IPSView = new view(IPS);
+let ITPS = new IndividualPlans(Plans);
+let ITPSView = new view(ITPS);
